@@ -1,0 +1,46 @@
+CREATE DATABASE sistema_educativo;
+
+
+********Correr el siguiente Query una vez creado la base de datos*************
+base de datos -- Crear tabla de profesores
+CREATE TABLE profesores (
+    id_profesor SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    especialidad VARCHAR(100) NOT NULL
+);
+
+-- Crear tabla de asignaturas
+CREATE TABLE asignaturas (
+    id_asignatura SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    horas INT NOT NULL CHECK (horas > 0)
+);
+
+-- Crear tabla intermedia para la relación muchos-a-muchos
+CREATE TABLE profesores_asignaturas (
+    id_profesor INT REFERENCES profesores(id_profesor) ON DELETE CASCADE,
+    id_asignatura INT REFERENCES asignaturas(id_asignatura) ON DELETE CASCADE,
+    PRIMARY KEY (id_profesor, id_asignatura)
+);
+
+-- Índices para mejorar el rendimiento
+CREATE INDEX idx_profesores_nombre ON profesores(nombre);
+CREATE INDEX idx_asignaturas_nombre ON asignaturas(nombre);
+CREATE INDEX idx_profesores_asignaturas ON profesores_asignaturas(id_profesor, id_asignatura);
+
+-- Datos iniciales para prueba (opcional)
+INSERT INTO profesores (nombre, especialidad) VALUES 
+('Juan Pérez', 'Matemáticas'),
+('María García', 'Literatura'),
+('Carlos López', 'Ciencias');
+
+INSERT INTO asignaturas (nombre, horas) VALUES 
+('Álgebra Lineal', 60),
+('Literatura Contemporánea', 45),
+('Biología Molecular', 75);
+
+INSERT INTO profesores_asignaturas (id_profesor, id_asignatura) VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(1, 3);
